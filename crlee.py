@@ -7,13 +7,7 @@ from crawlee.crawlers import BeautifulSoupCrawler, BeautifulSoupCrawlingContext
 
 
 async def main() -> None:
-    # Start timing
-    start_time = time.perf_counter()
-
-    # Ensure output directory exists
-    output_dir = "crawlee_output"
-    os.makedirs(output_dir, exist_ok=True)
-
+    # Setup crawler
     crawler = BeautifulSoupCrawler(
         # Limit the crawl to max requests. Remove or increase it for crawling all links.
         max_requests_per_crawl=10,
@@ -27,7 +21,7 @@ async def main() -> None:
         # Extract data from the page.
         data = {
             "url": context.request.url,
-            "title": context.soup.title.string if context.soup.title else None,
+            "body": context.soup.contents if context.soup.contents else None,
         }
 
         # Push the extracted data to the default dataset.
@@ -36,7 +30,10 @@ async def main() -> None:
         # Enqueue all links found on the page.
         # await context.enqueue_links()
 
-    # Run the crawler with the initial list of URLs.
+    # Start timing the crawling operation
+    start_time = time.perf_counter()
+
+    # Run the crawler with the initial list of URLs
     await crawler.run(["https://en.wikipedia.org/wiki/Formula_One"])
 
     # End timing and calculate execution time
