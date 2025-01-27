@@ -61,10 +61,10 @@ def run_statistical_test(url: str, iterations: int = 5) -> Dict[str, float]:
 if __name__ == "__main__":
     # Test URLs
     test_urls = {
-        # "Wikipedia (Reference)": "en.wikipedia.org/wiki/Formula_One",
-        # "JS Rendered": "quotes.toscrape.com/js",
-        # "Table Layout": "quotes.toscrape.com/tableful",
-        # "Pagination": "quotes.toscrape.com",
+        "Wikipedia (Reference)": "en.wikipedia.org/wiki/Formula_One",
+        "JS Rendered": "quotes.toscrape.com/js",
+        "Table Layout": "quotes.toscrape.com/tableful",
+        "Pagination": "quotes.toscrape.com",
         "Infinite Scroll": "quotes.toscrape.com/scroll",
     }
 
