@@ -2,18 +2,14 @@ import requests
 import time
 import os
 from datetime import datetime
+import numpy as np
+from typing import Dict
 
 
-def scrape_jina_ai(url: str, output_dir: str = "jina_output") -> tuple[float, str]:
+def scrape_jina_ai(url: str, output_dir: str = "jina_output") -> float:
     """
     Scrape content from r.jina.ai/<url> and save to markdown file.
-
-    Args:
-        url: The URL path to append to r.jina.ai/
-        output_dir: Directory to save the markdown file (default: 'jina_output')
-
-    Returns:
-        tuple: (execution_time_in_seconds, output_file_path)
+    Returns execution time in seconds.
     """
     # Ensure output directory exists
     os.makedirs(output_dir, exist_ok=True)
@@ -27,7 +23,7 @@ def scrape_jina_ai(url: str, output_dir: str = "jina_output") -> tuple[float, st
     try:
         # Send GET request
         response = requests.get(full_url)
-        response.raise_for_status()  # Raise exception for bad status codes
+        response.raise_for_status()
 
         # Generate output filename using timestamp
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -37,41 +33,54 @@ def scrape_jina_ai(url: str, output_dir: str = "jina_output") -> tuple[float, st
         with open(output_file, "w", encoding="utf-8") as f:
             f.write(response.text)
 
-        # End timing
+        # End timing and return
         end_time = time.perf_counter()
-        execution_time = end_time - start_time
-
-        return execution_time, output_file
+        return end_time - start_time
 
     except requests.RequestException as e:
         raise Exception(f"Failed to scrape {full_url}: {str(e)}")
 
 
-# Example usage
+def run_statistical_test(url: str, iterations: int = 5) -> Dict[str, float]:
+    """Run multiple iterations of scraping and calculate statistics."""
+    times = []
+
+    for _ in range(iterations):
+        execution_time = scrape_jina_ai(url)
+        times.append(execution_time)
+
+    return {
+        "mean": np.mean(times),
+        "std": np.std(times),
+        "ci_95": 1.96 * np.std(times) / np.sqrt(iterations),
+        "min": np.min(times),
+        "max": np.max(times),
+    }
+
+
 if __name__ == "__main__":
     # Test URLs
     test_urls = {
-        "Wikipedia (Reference)": "en.wikipedia.org/wiki/Formula_One",
-        "JS Rendered": "quotes.toscrape.com/js",
-        "Table Layout": "quotes.toscrape.com/tableful",
-        "Pagination": "quotes.toscrape.com",
+        # "Wikipedia (Reference)": "en.wikipedia.org/wiki/Formula_One",
+        # "JS Rendered": "quotes.toscrape.com/js",
+        # "Table Layout": "quotes.toscrape.com/tableful",
+        # "Pagination": "quotes.toscrape.com",
         "Infinite Scroll": "quotes.toscrape.com/scroll",
     }
 
-    # Store results
     results = []
-    total_time = 0
+    total_mean_time = 0
+    iterations = 5
 
     # Test each URL
     for site_name, url in test_urls.items():
         try:
-            execution_time, output_file = scrape_jina_ai(url)
-            results.append(
-                {"site": site_name, "time": execution_time, "file": output_file}
-            )
-            total_time += execution_time
-            print(f"Scraped {site_name} in {execution_time:.4f} seconds")
-            print(f"Output saved to: {output_file}")
+            stats = run_statistical_test(url, iterations)
+            results.append({"site": site_name, "stats": stats})
+            total_mean_time += stats["mean"]
+            print(f"Scraped {site_name}:")
+            print(f"  Mean time: {stats['mean']:.4f} ± {stats['ci_95']:.4f} seconds")
+            print(f"  Range: {stats['min']:.4f} - {stats['max']:.4f} seconds")
         except Exception as e:
             print(f"Error scraping {site_name}: {str(e)}")
 
@@ -81,15 +90,18 @@ if __name__ == "__main__":
 
     with open(results_file, "w", encoding="utf-8") as f:
         f.write("# Jina.ai Scraping Test Results\n\n")
-        f.write("| Site | Time (seconds) |\n")
-        f.write("|------|---------------|\n")
+        f.write("| Site | Mean Time (s) | 95% CI | Min-Max (s) |\n")
+        f.write("|------|---------------|---------|-------------|\n")
         for result in results:
-            f.write(f"| {result['site']} | {result['time']:.4f} |\n")
-        f.write("|------|---------------|\n")
-        f.write(f"| **Total** | **{total_time:.4f}** |\n\n")
+            stats = result["stats"]
+            f.write(
+                f"| {result['site']} | {stats['mean']:.4f} | ±{stats['ci_95']:.4f} | "
+                f"{stats['min']:.4f}-{stats['max']:.4f} |\n"
+            )
+        f.write("|------|---------------|---------|-------------|\n")
+        f.write(f"| **Total Mean** | **{total_mean_time:.4f}** | | |\n\n")
 
         f.write("## Details\n")
-        for result in results:
-            f.write(f"* {result['site']}: Output saved to `{result['file']}`\n")
+        f.write(f"Number of iterations per URL: {iterations}\n")
 
     print(f"\nResults summary saved to: {results_file}")
