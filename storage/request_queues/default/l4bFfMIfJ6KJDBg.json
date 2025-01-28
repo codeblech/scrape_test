@@ -2,7 +2,7 @@
   "id": "l4bFfMIfJ6KJDBg",
   "unique_key": "https://quotes.toscrape.com",
   "order_no": null,
-  "handled_at": "2025-01-27 19:30:07.474644+00:00",
+  "handled_at": "2025-01-28 19:05:31.122515+00:00",
   "request": {
     "url": "https://quotes.toscrape.com",
     "unique_key": "https://quotes.toscrape.com",
@@ -16,8 +16,8 @@
     },
     "retry_count": 0,
     "no_retry": false,
-    "loaded_url": "https://quotes.toscrape.com",
-    "handled_at": "2025-01-27 19:30:07.474644+00:00",
+    "loaded_url": "https://quotes.toscrape.com/",
+    "handled_at": "2025-01-28 19:05:31.122515+00:00",
     "id": "l4bFfMIfJ6KJDBg"
   }
 }
