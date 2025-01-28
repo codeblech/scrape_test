@@ -15,8 +15,6 @@
 ### Details
 Number of iterations per URL: 5
 
-### FIRECRAWL
-
 ## Crawlee Scraping Test Results
 
 | Site | Mean Time (s) | 95% CI | Min-Max (s) |
