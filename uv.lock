@@ -1301,6 +1301,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "crawlee", extra = ["all"] },
+    { name = "markdownify" },
     { name = "markitdown" },
     { name = "numpy" },
 ]
@@ -1308,6 +1309,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "crawlee", extras = ["all"], specifier = ">=0.5.2" },
+    { name = "markdownify", specifier = ">=0.14.1" },
     { name = "markitdown", specifier = ">=0.0.1a3" },
     { name = "numpy", specifier = ">=2.2.2" },
 ]

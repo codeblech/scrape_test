@@ -30,7 +30,7 @@ Number of iterations per URL: 5
 ### Details
 Number of iterations per URL: 5
 
-## Crawlee Scraping Test Results (conversion to Markdown time included)
+## Crawlee Scraping Test Results (conversion to Markdown time included, markitdown)
 
 | Site | Mean Time (s) | 95% CI | Min-Max (s) |
 |------|---------------|---------|-------------|
@@ -46,7 +46,7 @@ Number of iterations per URL: 5
 Number of iterations per URL: 5
 
 
-## Crawlee Scraping Test Results (using headless browser, conversion to Markdown time included)
+## Crawlee Scraping Test Results (using headless browser, conversion to Markdown time included, markitdown)
 
 | Site | Mean Time (s) | 95% CI | Min-Max (s) |
 |------|---------------|---------|-------------|
@@ -59,6 +59,21 @@ Number of iterations per URL: 5
 | **Total Mean** | **4.7611** | | |
 
 ### Details
+Number of iterations per URL: 5
+
+# Crawlee Scraping Test Results (using headless browser, conversion to Markdown time included, markdownify)
+
+| Site | Mean Time (s) | 95% CI | Min-Max (s) |
+|------|---------------|---------|-------------|
+| Wikipedia (Reference) | 0.9076 | ±1.0760 | 0.2782-3.3624 |
+| JS Rendered | 1.0413 | ±1.3255 | 0.2798-4.0657 |
+| Table Layout | 0.8698 | ±0.9978 | 0.2927-3.1464 |
+| Pagination | 0.7086 | ±0.7203 | 0.2843-2.3516 |
+| Infinite Scroll | 0.8052 | ±0.9199 | 0.2745-2.9040 |
+|------|---------------|---------|-------------|
+| **Total Mean** | **4.3326** | | |
+
+## Details
 Number of iterations per URL: 5
 
 
