@@ -1,0 +1,23 @@
+{
+  "id": "ZanbKdNIqkNH4sd",
+  "unique_key": "http://quotes.toscrape.com/js-delayed",
+  "order_no": null,
+  "handled_at": "2025-01-29 18:50:06.517473+00:00",
+  "request": {
+    "url": "http://quotes.toscrape.com/js-delayed",
+    "unique_key": "http://quotes.toscrape.com/js-delayed",
+    "method": "GET",
+    "headers": {},
+    "payload": null,
+    "user_data": {
+      "__crawlee": {
+        "state": 3
+      }
+    },
+    "retry_count": 0,
+    "no_retry": false,
+    "loaded_url": "http://quotes.toscrape.com/js-delayed/",
+    "handled_at": "2025-01-29 18:50:06.517473+00:00",
+    "id": "ZanbKdNIqkNH4sd"
+  }
+}

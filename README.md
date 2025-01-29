@@ -110,3 +110,12 @@ Delated JS
 ### BeautifulSoupCrawler
 Pagination
 Tableful
+
+
+## Following folders have final crawlee scripts and outputs
+
+final_crawlee_browser_js
+final_crawlee_browser_js_delayed
+final_crawlee_browser
+final_crawlee_bs4
+final_crawlee_browser_inf_scroll

@@ -117,9 +117,12 @@ async def run_statistical_test(url: str, iterations: int = 5) -> Dict[str, float
 
 async def main():
     test_urls = {
-        # "JS Rendered": "https://quotes.toscrape.com/js",
+        "Delayed JS": "http://quotes.toscrape.com/js-delayed",
+        "Wikipedia (Reference)": "https://en.wikipedia.org/wiki/Formula_One",
+        "JS Rendered": "https://quotes.toscrape.com/js",
+        "Table Layout": "https://quotes.toscrape.com/tableful",
+        "Pagination": "https://quotes.toscrape.com",
         "Infinite Scroll": "https://quotes.toscrape.com/scroll",
-        # "Delayed JS": "http://quotes.toscrape.com/js-delayed",
     }
 
     # First, perform the statistical scraping
