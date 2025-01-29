@@ -99,3 +99,14 @@ Number of iterations per URL: 5
 "Table Layout": "quotes.toscrape.com/tableful" \
 "Pagination": "quotes.toscrape.com" \
 "Infinite Scroll": "quotes.toscrape.com/scroll"
+
+
+## Using Crawlee
+### PlaywrightCrawler
+JS-rendered
+Infinite Scroll
+Delated JS
+
+### BeautifulSoupCrawler
+Pagination
+Tableful

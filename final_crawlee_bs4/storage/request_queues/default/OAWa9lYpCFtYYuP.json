@@ -1,0 +1,23 @@
+{
+  "id": "OAWa9lYpCFtYYuP",
+  "unique_key": "https://quotes.toscrape.com/tableful",
+  "order_no": null,
+  "handled_at": "2025-01-29 14:40:44.847226+00:00",
+  "request": {
+    "url": "https://quotes.toscrape.com/tableful",
+    "unique_key": "https://quotes.toscrape.com/tableful",
+    "method": "GET",
+    "headers": {},
+    "payload": null,
+    "user_data": {
+      "__crawlee": {
+        "state": 3
+      }
+    },
+    "retry_count": 0,
+    "no_retry": false,
+    "loaded_url": "http://quotes.toscrape.com/tableful/",
+    "handled_at": "2025-01-29 14:40:44.847226+00:00",
+    "id": "OAWa9lYpCFtYYuP"
+  }
+}

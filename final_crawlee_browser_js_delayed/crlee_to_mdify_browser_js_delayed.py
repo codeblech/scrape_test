@@ -1,36 +1,64 @@
 import os
 import json
-import tempfile
 import asyncio
 import time
 from datetime import datetime
 import numpy as np
 from typing import Dict
-from markitdown import MarkItDown
-from crawlee.crawlers import BeautifulSoupCrawler, BeautifulSoupCrawlingContext
+from markdownify import markdownify as md
+from crawlee.crawlers import PlaywrightCrawler, PlaywrightCrawlingContext
+from markdownify import MarkdownConverter
 
 # Define paths
 input_directory = (
-    "/home/malik/Documents/work/scrape test/scrape_test/storage/datasets/default"
+    "/home/malik/Documents/work/scrape test/scrape_test/final_crawlee_browser_js_delayed/storage/datasets/default"
 )
-output_directory = "/home/malik/Documents/work/scrape test/scrape_test/crawlee_output"
+output_directory = "/home/malik/Documents/work/scrape test/scrape_test/final_crawlee_browser_js_delayed/crawlee_output_browser_js_delayed"
 
 # Create output directory if it doesn't exist
 os.makedirs(output_directory, exist_ok=True)
 
 
+class NoLinksConverter(MarkdownConverter):
+    """
+    Custom MarkdownConverter that removes all links while preserving the text content
+    """
+
+    def convert_a(self, el, text, convert_as_inline):
+        # Return just the text content without the link
+        return text
+
+    def convert_span(self, el, text, convert_as_inline):
+        # The default just returns text inline.
+        # We can add a space if you find they get merged too closely:
+        return text + " "
+
+
+# Create shorthand method for conversion
+def md(html, **options):
+    return NoLinksConverter(**options).convert(html)
+
+
 async def scrape_with_crawlee(url: str) -> float:
     """Scrape a single URL and return execution time."""
-    crawler = BeautifulSoupCrawler(
+    crawler = PlaywrightCrawler(
         max_requests_per_crawl=10,
     )
 
     @crawler.router.default_handler
-    async def request_handler(context: BeautifulSoupCrawlingContext) -> None:
+    async def request_handler(context: PlaywrightCrawlingContext) -> None:
+
+        context.log.info("Waiting for delayed JS rendered page")
+        context.page.wait(11000)  # 11 second
         context.log.info(f"Processing {context.request.url} ...")
+
+        # Get the page content using Playwright
+        html_content = await context.page.content()
         data = {
             "url": context.request.url,
-            "body": context.soup.contents if context.soup.contents else None,
+            "body": [
+                html_content
+            ],  # Wrap in list to maintain compatibility with existing code
         }
         await context.push_data(data)
 
@@ -42,9 +70,6 @@ async def scrape_with_crawlee(url: str) -> float:
 
 async def process_and_convert_to_markdown():
     total_start_time = time.perf_counter()
-
-    # Initialize MarkItDown
-    md = MarkItDown()
 
     # Process each file in the input directory
     for filename in os.listdir(input_directory):
@@ -59,31 +84,19 @@ async def process_and_convert_to_markdown():
             url = data.get("url", "")
             html_content = "".join(data.get("body", []))
 
-            # Create a temporary HTML file
-            with tempfile.NamedTemporaryFile(
-                mode="w", suffix=".html", delete=False, encoding="utf-8"
-            ) as temp_file:
-                temp_file.write(html_content)
-                temp_path = temp_file.name
+            # Convert HTML to Markdown using markdownify
+            markdown_content = md(html_content)
 
-            try:
-                # Convert HTML to Markdown using the temporary file path
-                markdown_content = md.convert(temp_path).text_content
+            # Prepare the Markdown with URL at the top
+            markdown_with_url = f"# URL: {url}\n\n{markdown_content}"
 
-                # Prepare the Markdown with URL at the top
-                markdown_with_url = f"# URL: {url}\n\n{markdown_content}"
+            # Define output file path
+            output_filename = f"{os.path.splitext(filename)[0]}.md"
+            output_path = os.path.join(output_directory, output_filename)
 
-                # Define output file path
-                output_filename = f"{os.path.splitext(filename)[0]}.md"
-                output_path = os.path.join(output_directory, output_filename)
-
-                # Write the Markdown content to a file
-                with open(output_path, "w", encoding="utf-8") as output_file:
-                    output_file.write(markdown_with_url)
-
-            finally:
-                # Clean up the temporary file
-                os.unlink(temp_path)
+            # Write the Markdown content to a file
+            with open(output_path, "w", encoding="utf-8") as output_file:
+                output_file.write(markdown_with_url)
 
     total_end_time = time.perf_counter()
     return total_end_time - total_start_time
@@ -108,11 +121,7 @@ async def run_statistical_test(url: str, iterations: int = 5) -> Dict[str, float
 
 async def main():
     test_urls = {
-        "Wikipedia (Reference)": "https://en.wikipedia.org/wiki/Formula_One",
-        "JS Rendered": "https://quotes.toscrape.com/js",
-        "Table Layout": "https://quotes.toscrape.com/tableful",
-        "Pagination": "https://quotes.toscrape.com",
-        "Infinite Scroll": "https://quotes.toscrape.com/scroll",
+        "Delayed JS": "http://quotes.toscrape.com/js-delayed",
     }
 
     # First, perform the statistical scraping
